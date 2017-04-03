@@ -119,6 +119,43 @@ In the II. chapter we are going to discuss the embedded framework, wich provides
 Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.
 
 \section{Case Study: IGBT Thermal model}
+
+\subsection{The function of the Thermal model}
+The semiconductor switches maximal allowable temperature is limited. The absolute maximum junction temperature of silicium based devices  are $175$ degrees. It is advisable to take the advantage of this temperature to keep the volume/power ratio as low as possible. The thermometer placed in the heat sink or in the semiconductor case does not provide suefficient information about the actual junction temperature of the semiconductor elements. However semiconductor junction temperatures can be calculated knowing the thermal model between the thermometer and the semiconductor junction. The model parameters and the model type are described in the datasheets. The junction temperatures can be calculated from the diode and transistor losses.
+
+\subsection{The offline model}
+The IGBT junction temperature calculation module structure is based on the principles laid down the full model description. The thermal model calculates the three phase bridge and the brake IGBT temperatures. The calculation method can be generalized, it is the same in every phase legs. The brake transistor is basically a truncated phase containing only the bottom transistors and freewheeling diode. With the following assumptions the temperuter calculation can be simplified to only one transistor loss calculation
+
+-A brake ohmic resistor
+It neglecting diode switching losses, the transistor becomes warmer under load
+
+-The duty cycle can be used directly in the loss calculation
+
+Due to the above considerations bridge IGBT temperature and brake IGBT temperature library blocks created as basic elements. The library block interface is input, output and parameter bus as discussed in the model description part. The input bus contains the phase current, dc voltage, duty cycle of the respective phase, switching frequency, case temperature. The parameter bus containes the IGBT, diode electrical and thermal parameters. The output bus contains the igbt and diode losses and temperatures. The parameters are calculated with an m script which contains the datasheet values and values derived from these parameters.
+The library blocks can be separeted to three main parts:
+Duty cycle calculation of the individual semiconductor (diode, igbt) elements
+Switching and conduction loss calculations for each element.
+Temperature calculation from power losses using a three tie constant thermal model (Foster network or PI). 
+
+The three phase leg and brake temperature calculation is integrated in model. This model can be easily simulated in the test environment and in the integrated model as a referenced model.
+The test harness structure is the following: on the left side are the parameters and excitations. These blocks connected with the thermal model placed in the middle with the buses used in the integrated model. Output is on the right side. A model block created to calcalutethe one period average values of the output. The average values used for comparison with Semisel calculator. 
+In the simulink model a defined setpoint can be set. The simulink model source parameters calculated with  script. (Input parameters: UDC, phase current, cosfi, switching frequency, Power Frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
+The Semisel calculator program is used for validating the junction temperature calculator. The Semisel calculates the average temperature and the maximum temperature values of the selected device. Setting the same setpoint in the calculator program and in the simulation we expect the same result. The  semisel calculator doesn’t give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values is satisfactory. The temperature should differ the direction of safety so the temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is in the 0.. +5 range.
+After the successful offline simulation, C code is generated from the integrated model which was tested in the real inverter.
+The case, junction temperatures, phase currents was recorded in different setpoints on a drive testbench. The temperature vs. time function was simulated in Sumilink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the figure.
+
+
+-Komponensek integrálása (referenced subsystem)
+
+-Komponensek felépítése (library)
+
+-Offline tesztkörnyezet kialakítása
+
+-Online modellel való mérések
+
+
+
+
 You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don't know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I'm breaking now. We said we'd say it was the snow that killed the other two, but it wasn't. Nature is lethal but it doesn't hold a candle to man.
 
 % needed in second column of first page if using \IEEEpubid
