@@ -105,19 +105,10 @@ In the II. chapter we are going to discuss the embedded framework, wich provides
 
 \section{Embedded Framework}
 
--Embedded framework all the hardware dependent parts of the code
-
--thatswhy the generated code can be hardware independent
-
--Connection to the model through interfacefaces
-
--the scheduler is in c 
-
--the interfacing with the model: Through the  
+The embedded framework provides connection between the generated code and the hardware peripherials. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case all the generated code is hardware independent and reusable. The model connects to the embedded code thrugh interfaces. These interfaces are represented as Buses in Simulink and structs in C. The input structs contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start stop signals etc.) and give the calculated duty cycles and the switching frequency. On the next section the Simulink models are described. 
 
 \section{Simulink Model}
-Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.
-
+To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. These functions has the same input and output ports like the main model and the functionality models connect eachother through them. In Simulink the test excitations are given through these inputs and a behaviour is monitored through the outputs of these subsystem.  On the following chapters a case study is described about the IGBT thermal model.
 \section{Case Study: IGBT Thermal model}
 
 \subsection{The function of the Thermal model}
