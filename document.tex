@@ -1,4 +1,5 @@
 \usepackage{gensymb}
+\usepackage{listings}
 
 \begin{document}
 %
@@ -101,24 +102,24 @@ The embedded framework provides connection between the generated code and the ha
 On every PWM timer cycle timer interrupt is given. The timer pheripherial gives an interrupt to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
 \begin{lstlisting}
-typedef struct \{ \\
-  real32_T VxMeasured; \\
-  real32_T VyMeasured; \\
-  real32_T Vdc; \\
-  real32_T Ia; \\
-  real32_T Ib; \\
-  real32_T Ic; \\
-  real32_T Ta; \\
-  real32_T Tb; \\
-  real32_T Tc; \\
-  real32_T Tinner; \\
-  real32_T Tbrake; \\
-  real32_T V5Sto1Meas; \\
-  real32_T V5Sto2Meas; \\
-  real32_T V15Meas; \\
-  real32_T FANSpeed1; \\
-  real32_T FANSpeed2; \\
-\} MeasurementIn;
+typedef struct { 
+  real32_T VxMeasured; 
+  real32_T VyMeasured; 
+  real32_T Vdc; 
+  real32_T Ia; 
+  real32_T Ib; 
+  real32_T Ic; 
+  real32_T Ta; 
+  real32_T Tb; 
+  real32_T Tc; 
+  real32_T Tinner; 
+  real32_T Tbrake; 
+  real32_T V5Sto1Meas; 
+  real32_T V5Sto2Meas; 
+  real32_T V15Meas; 
+  real32_T FANSpeed1; 
+  real32_T FANSpeed2; 
+} MeasurementIn;
 
 \end{lstlisting}
 
@@ -175,6 +176,14 @@ The test harness structure is the following: on the left side are the parameters
 We can define the desired setpoint in the simulation environment. The simulink model source parameters are calculated with script. (Input parameters: DC voltage, phase current, $cos\phi{}$, switching frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
 
 The Semisel calculator program is used for validating the calculated junction temperature. The Semisel software calculates the average temperature and the maximum temperature values of the selected device. Setting the same setpoint in the calculator program and in the simulation we expect the same result. The  semisel calculator doesn’t give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values is fullfilling our reuirements. The temperature should differ the direction of safety so the temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is in the 0.. +5 range.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[height=0.8\columnwidth, angle = 270]{figures/IGBthermal_test_env.pdf}
+
+\caption{Test environment}
+\label{test_env}
+\end{figure}
 
 After the successful offline simulation, C code is generated from the integrated model which was tested in the real inverter.
 The case, junction temperatures, phase currents was recorded in different setpoints on a drive testbench. The temperature vs. time function was simulated in Sumilink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the figure.
@@ -277,7 +286,7 @@ The case, junction temperatures, phase currents was recorded in different setpoi
 
 
 \section{Conclusion}
-\blindtext
+
 
 
 
@@ -300,7 +309,7 @@ The case, junction temperatures, phase currents was recorded in different setpoi
 
 \appendices
 \section{Proof of the First Zonklar Equation}
-\blindtext
+
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
