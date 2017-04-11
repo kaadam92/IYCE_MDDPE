@@ -126,12 +126,18 @@ All the measured inputs are 32 bit floating point numbers, the values start with
 
 \subsection{Scheduling the tasks}
 For scheduling an embedded operation system is used. In this particular project the Keil RTX operation system is used. This Keil RTX has all the necessary tools for this project task priority levels timer functions and os signals. As it was mentioned above the PWM timer schedules the measurement of the DC voltage and the phase currents. After the measurements completed and the values calculated to their normalized values the motor control fast task is called. This task calculates the pwm duty cycle from the input and the given setpoint and checks whether the measured values exceed the predefined limits. 
-There is the main task which scheduled by the os timer  
+There is a lower priority task which scheduled by the os timer. This task provides operation framework and the compute intensive functions are also placed there. The structure of the Simulink model is described on the following chapter.
 
 
 
 \section{Simulink Model}
 To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. These functions has the same input and output ports like the main model and the functionality models connect eachother through them. In Simulink the test excitations are given through these inputs and a behaviour is monitored through the outputs of these subsystem.  On the following chapters a case study is described about the IGBT thermal model.
+To be able to 
+
+Közös interfészek
+globális változók
+reference subsystem
+nagy teszt kis teszt
 
 \section{Case Study: IGBT Thermal model}
 
