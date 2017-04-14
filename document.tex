@@ -1,4 +1,5 @@
 \usepackage{gensymb}
+\usepackage{listings}
 
 \begin{document}
 %
@@ -49,12 +50,8 @@ Email: dkiss@h-tec.hu; ahalmos@h-tec.hu; gkalman@h-tec.hu}
 
 
 
-
-
 % use for special paper notices
 %\IEEEspecialpapernotice{(Invited Paper)}
-
-
 
 
 % make the title area
@@ -78,10 +75,6 @@ IYCE, Power Electronics, MATLAB, Simulink, Motor Control, VFD, Model Driven Deve
 \end{IEEEkeywords}
 
 
-
-
-
-
 % For peer review papers, you can put extra information on the cover
 % page as needed:
 % \ifCLASSOPTIONpeerreview
@@ -91,7 +84,6 @@ IYCE, Power Electronics, MATLAB, Simulink, Motor Control, VFD, Model Driven Deve
 % For peerreview papers, this IEEEtran command inserts a page break and
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
-
 
 
 \section{Introduction}
@@ -110,24 +102,24 @@ The embedded framework provides connection between the generated code and the ha
 On every PWM timer cycle timer interrupt is given. The timer pheripherial gives a signal to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
 \begin{lstlisting}
-typedef struct \{ \\
-  real32_T VxMeasured; \\
-  real32_T VyMeasured; \\
-  real32_T Vdc; \\
-  real32_T Ia; \\
-  real32_T Ib; \\
-  real32_T Ic; \\
-  real32_T Ta; \\
-  real32_T Tb; \\
-  real32_T Tc; \\
-  real32_T Tinner; \\
-  real32_T Tbrake; \\
-  real32_T V5Sto1Meas; \\
-  real32_T V5Sto2Meas; \\
-  real32_T V15Meas; \\
-  real32_T FANSpeed1; \\
-  real32_T FANSpeed2; \\
-\} MeasurementIn;
+typedef struct { 
+  real32_T VxMeasured; 
+  real32_T VyMeasured; 
+  real32_T Vdc; 
+  real32_T Ia; 
+  real32_T Ib; 
+  real32_T Ic; 
+  real32_T Ta; 
+  real32_T Tb; 
+  real32_T Tc; 
+  real32_T Tinner; 
+  real32_T Tbrake; 
+  real32_T V5Sto1Meas; 
+  real32_T V5Sto2Meas; 
+  real32_T V15Meas; 
+  real32_T FANSpeed1; 
+  real32_T FANSpeed2; 
+} MeasurementIn;
 
 \end{lstlisting}
 
@@ -182,35 +174,23 @@ The three phase half-bridge IGBTs and brake IGBT temperature calculation is inte
 
 The test harness structure is the following: on the left side are the parameters and excitations. These blocks connected with the thermal model placed in the middle with the buses used in the integrated model. Output is on the right side. A model block created to calcalutethe one period average values of the output. The average values used for comparison with Semisel calculator.
 
-In the Simulink model a defined setpoint can be set. The simulink model source parameters calculated with script. (Input parameters: DC voltage, phase current, $cos\phi{}$, switching frequency, Power Frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
+We can define the desired setpoint in the simulation environment. The simulink model source parameters are calculated with script. (Input parameters: DC bus voltage, phase current, $cos\phi{}$, switching frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
 
-The Semisel calculator program is used for validating the junction temperature calculator. The Semisel calculates the average temperature and the maximum temperature values of the selected device. Setting the same setpoint in the calculator program and in the simulation we expect the same result. The  semisel calculator doesn’t give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values is satisfactory. The temperature should differ the direction of safety so the temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is in the 0.. +5 range.
-After the successful offline simulation, C code is generated from the integrated model which was tested in the real inverter.
-The case, junction temperatures, phase currents was recorded in different setpoints on a drive testbench. The temperature vs. time function was simulated in Sumilink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the figure.
+The Semisel calculator program is used for validating the calculated junction temperature. The Semisel software calculates the average temperature and the maximum temperature values of the selected device. Setting the same setpoint in the calculator program and in the simulation we expect the same result. The  semisel calculator doesn’t give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values is fullfilling our reuirements. The temperature should differ the direction of safety, so the calculated temepratures should be smaller, than the actual junction temperature. The temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is less than $5\ \degree{}C$ .
+
+After the successful offline simulation, if we see the desired results, the C code is generated from the integrated model which was tested in the real inverter.
+
+The case, junction temperatures, phase currents was recorded in different setpoints on a drive testbench. The temperature vs. time function was simulated in Sumilink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the figure \ref{fig:fig_sim}.
 
 \begin{figure*}[!h]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/homerseklet}
+\includegraphics[width=0.9\textwidth]{figures/homerseklet}
 % where an .eps filename suffix will be assumed under latex, 
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
 \caption{Simulation Results}
-\label{fig_sim}
+\label{fig:fig_sim}
 \end{figure*}
-
-
--Komponensek integrálása (referenced subsystem)
-
--Komponensek felépítése (library)
-
--Offline tesztkörnyezet kialakítása
-
--Online modellel való mérések
-
-
-
-
-You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don't know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I'm breaking now. We said we'd say it was the snow that killed the other two, but it wasn't. Nature is lethal but it doesn't hold a candle to man.
 
 % needed in second column of first page if using \IEEEpubid
 %\IEEEpubidadjcol
@@ -300,7 +280,7 @@ You think water moves fast? You should see ice. It moves like it has a mind. Lik
 
 
 \section{Conclusion}
-\blindtext
+
 
 
 
@@ -322,15 +302,20 @@ You think water moves fast? You should see ice. It moves like it has a mind. Lik
 
 
 \appendices
-\section{Proof of the First Zonklar Equation}
-\blindtext
+\section{Simulink Models}
+\begin{figure*}[!H]
+\centering
+\includegraphics[height=0.8\textwidth, angle = 270]{figures/IGBthermal_test_env.pdf}
+
+\caption{Test environment}
+\label{test_env}
+\end{figure*}
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
 
 
-The authors would like to thank...
-
+We would like to thank the opportunity to work on this project for Hyundai Technologies Center Hungary Ltd.
 
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
