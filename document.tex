@@ -148,14 +148,19 @@ There is a lower priority task which scheduled by the os timer. This task provid
 
 
 \section{Simulink Model}
-To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. These functions has the same input and output ports like the main model and the functionality models connect eachother through them. 
-To be able to connect the the embedded code easily to the model common interfaces used. These common interfaces are represented as buses in Simulink. All modules have the following input-buses parameters, input
-In Simulink the test excitations are given through these inputs and a behaviour is monitored through the outputs of these subsystem.  On the following chapters a case study is described about the IGBT thermal model.
 
-Közös interfészek
-globális változók
-reference subsystem
-nagy teszt kis teszt
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/inputs}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{Simulink bus creator for MeasurementIn bus}
+\label{fig:fig_MeasurementIn}
+\end{figure}
+
+To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. To be able to connect the the embedded code easily to the model common interfaces used. These common interfaces are represented as buses in Simulink. All modules have the following input-buses parameters and input and an output bus, where the calculated control signals are given. The difference between the input and the parameter bus is that the inputs are measured values and excitations, and the parameters are the constants which are specific to the system. The Simulink representation of the MeasurementIn bus which was described in the last chapter is on the << hivatkozás a fig_MeasurementIn re>>. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. The functions connected to eachothermodel by Simulink Referenced Models <<kép a referenceModel.pdf és hivatkozás>>. The organizing principle of the grouping of these referenced models is the model frequency. As it was  mentioned in the <<referenci a Embedded framework fejezetre>> there are two priority levels, the task which runs at switching frequncy, and one which scheduled by Keil RTX embedded operation sytem. The  On the following chapter a case study is described about one of the referenced models, the IGBT thermal model. This IGBT thermal model is scheduled by the embedded operating system. 
+
 
 \section{Case Study: IGBT Thermal model}
 
