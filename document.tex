@@ -1,6 +1,12 @@
 \usepackage{gensymb}
 \usepackage{listings}
 
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
 \begin{document}
 %
 % paper title
@@ -87,11 +93,19 @@ IYCE, Power Electronics, MATLAB, Simulink, Motor Control, VFD, Model Driven Deve
 
 
 \section{Introduction}
-A modern VFD system must comply to many customer requiroments. There are also many industrial standard such as power factor regulations and EMC limitations wich are needed to control by software. The computation power of the embeddedd microcontrollers are capeble to achive this kind of sophistication, but the this power needed to be utilized by the programmer efficiently. The development cycles also getting shorter and shorter to met the constantly changing market demand. Therfore a modular, reusable and scalable control software need to be implemented.
+A modern VFD\footnote{Variable Frequency Drive} system must comply to many customer requiroments. There are also many industrial standard such as power factor regulations and EMC limitations wich are needed to control by software. The computation power of the embeddedd microcontrollers are capeble to achive this kind of sophistication, but the this power needed to be utilized by the programmer efficiently. The development cycles also getting shorter and shorter to met the constantly changing market demand. Therfore a modular, reusable and scalable control software need to be implemented.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\columnwidth]{figures/VFDschematic}
+
+\caption{Basic VFD schematic}
+\label{vfd_sch}
+\end{figure}
 
 One of the ways of this new way of thinking about software development is model-driven or model-based development. This means we are using graphical diagrams to describe the desired functionality instead of lines of program code. In power electronics this kind of abstraction can seem contradictionary, becouse  of the strict timing constraints, but as this paper will show, with the correct methodes high level problem solving and low level IO handling can go hand in hand. There are even many benefits of model-based desing due to the implemented control loops and state machines, wich can be easily viusalised and simulated with the proper software tool.
 
-Modern software tools such as MATLAB and Simulink are very well suited to this task. The Embedded Coder toolbox generates the C code, wich can be complied in the embedded processor. Becouse the model is developped in Simulink, the behaviour of the implelemnted control algorythms can be tested immediatly, on the PC. When the simulations sows the desired results, the C code can be generated. This generated C code is 
+Modern software tools such as MATLAB and Simulink are very well suited to this task. The Embedded Coder toolbox generates the C code, wich can be complied in the embedded processor. Becouse the model is developped in Simulink, the behaviour of the implelemnted control algorythms can be tested immediatly, on the PC. When the simulations shows the desired results, the C code can be generated. This generated C code is modular, reusable and platfrom independent. Due to this platform independent nature, a framework needs to be created. This framework provides the conenction between the model and the peripherials, runs the necessary data management tasks and it is also responsible for the timing constraints.
 
 In the II. chapter we are going to discuss the embedded framework, wich provides the connection between the Simulink model and the real microcontroller outputs and inputs. The III. chapter will present a short insight in the Simulink model, and present the challanges you can face during the development. The IV. chapter will provide a case study about the whole method. The example will be a IGBT thermal model. We will compare the simulated data and the measured tempereatures.
 
@@ -101,6 +115,7 @@ In the II. chapter we are going to discuss the embedded framework, wich provides
 The embedded framework provides connection between the generated code and the hardware peripherials. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case all the generated code is hardware independent and reusable. The model connects to the embedded code thrugh interfaces. These interfaces are represented as Buses in Simulink and structs in C. The input structs contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start stop signals etc.) and give the calculated duty cycles and the switching frequency. 
 On every PWM timer cycle timer interrupt is given. The timer pheripherial gives a signal to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
+\begin{absolutelynopagebreak}
 \begin{lstlisting}
 typedef struct { 
   real32_T VxMeasured; 
@@ -122,6 +137,7 @@ typedef struct {
 } MeasurementIn;
 
 \end{lstlisting}
+\end{absolutelynopagebreak}
 
 All the measured inputs are 32 bit floating point numbers, the values start with V are voltages the values start with I are currents and the values start with T are temperatures.
 
