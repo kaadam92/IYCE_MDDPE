@@ -182,7 +182,17 @@ The library blocks can be separeted to three main parts:
 \end{itemize}
 Duty cycle calculation of the individual semiconductor (diode, IGBT) elements
 Switching and conduction loss calculations for each element.
-Temperature calculation from power losses using a three tie constant thermal model (Foster network or PI). 
+Temperature calculation from power losses using a three tie constant thermal model (Foster network or PI).
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/foster.png}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{The Foster thermal model}
+\label{fig:foster}
+\end{figure}
 
 The three phase half-bridge IGBTs and brake IGBT temperature calculation is integrated in the model. This model can be easily simulated in the test environment and in the integrated model as a referenced model.
 
