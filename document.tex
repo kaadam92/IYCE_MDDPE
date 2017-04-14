@@ -66,7 +66,7 @@ Email: dkiss@h-tec.hu; ahalmos@h-tec.hu; gkalman@h-tec.hu}
 
 \begin{abstract}
 %\boldmath
-Nowadays power converters are gaining more and more importance due to the increasing demand of energy efficient solutions in industrial applications, renewable energy sources and electrical transportation. To meet this new demand, development cycles must be shortened, without compromising the quality of the control software. This goal can be achieved with model driven development, and it also can make the process more agile. In the presented method, we are using MATLAB Simulink to implement the control related software components. These software modules, such as control loops and state machines can be functionally tested in the Simulink environment, with much better observability than the real embedded software. The embedded code is generated from these models. The embedded code only contains the framework, which is providing a interface between the model and the control peripherals and the real time operating system. In this paper we are discussing the process in detail on a frequency converter firmware as example.
+Nowadays power converters are gaining more and more importance due to the increasing demand of energy efficient solutions in industrial applications, renewable energy sources and electrical transportation. To meet this new demand, development cycles must be shortened, without compromising the quality of the control software. This goal can be achieved with model driven development, and it also can make the process more agile. In the presented method, we are using MATLAB Simulink to implement the control related software components. These software modules, such as control loops and state machines can be functionally tested in the Simulink environment, with much better observability than the real embedded software. The embedded code is generated from these models. The embedded code additionally contains the framework, which is providing a interface between the model and the control peripherals and the real time operating system. In this paper we are discussing the process in detail on a frequency converter firmware as example.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -93,7 +93,7 @@ IYCE, Power Electronics, MATLAB, Simulink, Motor Control, VFD, Model Driven Deve
 
 
 \section{Introduction}
-A modern VFD\footnote{Variable Frequency Drive} system must comply to many customer requiroments. There are also many industrial standard such as power factor regulations and EMC limitations wich are needed to control by software. The computation power of the embeddedd microcontrollers are capeble to achive this kind of sophistication, but the this power needed to be utilized by the programmer efficiently. The development cycles also getting shorter and shorter to met the constantly changing market demand. Therfore a modular, reusable and scalable control software need to be implemented.
+A modern VFD\footnote{Variable Frequency Drive} system must comply to many customer requiroments. There are also many industrial standard and directives wich are needed to control by software. The computation power of the embedded microcontrollers are capable to achieve this kind of sophistication, but this power needed to be utilized by the programmer efficiently. The development cycles also getting shorter and shorter to meet the constantly changing market demand. Therefore a modular, reusable and scalable control software need to be implemented.
 
 \begin{figure}[h]
 \centering
@@ -103,17 +103,17 @@ A modern VFD\footnote{Variable Frequency Drive} system must comply to many custo
 \label{vfd_sch}
 \end{figure}
 
-One of the ways of this new way of thinking about software development is model-driven or model-based development. This means we are using graphical diagrams to describe the desired functionality instead of lines of program code. In power electronics this kind of abstraction can seem contradictionary, becouse  of the strict timing constraints, but as this paper will show, with the correct methodes high level problem solving and low level IO handling can go hand in hand. There are even many benefits of model-based desing due to the implemented control loops and state machines, wich can be easily viusalised and simulated with the proper software tool.
+One of the ways of this new way of thinking about software development is model-driven or model-based development. This means we are using graphical diagrams to describe the desired functionality instead of lines of program code. In power electronics this kind of abstraction can seem contradictory, because  of the strict timing constraints, but as this paper will show, with the correct methods high level problem solving and low level IO handling can go hand in hand. There are even many benefits of model-based design due to the implemented control loops and state machines, which can be easily visualised and simulated with the proper software tool.
 
-Modern software tools such as MATLAB and Simulink are very well suited to this task. The Embedded Coder toolbox generates the C code, wich can be complied in the embedded processor. Becouse the model is developped in Simulink, the behaviour of the implelemnted control algorythms can be tested immediatly, on the PC. When the simulations shows the desired results, the C code can be generated. This generated C code is modular, reusable and platfrom independent. Due to this platform independent nature, a framework needs to be created. This framework provides the conenction between the model and the peripherials, runs the necessary data management tasks and it is also responsible for the timing constraints.
+Modern software tools such as MATLAB and Simulink are very well suited to this task. The Embedded Coder toolbox generates the C code, which can be complied for the embedded processor. Because the model is developed in Simulink, the behavior of the implelemented control algorithms can be tested immediately, on the PC. After the off-line simulation shows the desired results, the C code can be generated. This generated C code is modular, reusable and platform independent. Due to this platform independent nature, a framework needs to be created. This framework provides the connection between the model and the peripherals, runs the necessary data management tasks and it is also responsible for the timing constraints.
 
-In the II. chapter we are going to discuss the embedded framework, wich provides the connection between the Simulink model and the real microcontroller outputs and inputs. The III. chapter will present a short insight in the Simulink model, and present the challanges you can face during the development. The IV. chapter will provide a case study about the whole method. The example will be a IGBT thermal model. We will compare the simulated data and the measured tempereatures.
+In Chapter II. we are going to discuss the embedded framework, wich provides the connection between the Simulink model and the real microcontroller outputs and inputs. Chapter III. will present a short insight in the Simulink model, and present the challenges you can face during the development. Chapter IV. will provide a case study about the whole method. The example will be an IGBT thermal model. We will compare the simulated data and the measured temperatures.
 
 
 \section{Embedded Framework}
 
-The embedded framework provides connection between the generated code and the hardware peripherials. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case all the generated code is hardware independent and reusable. The model connects to the embedded code thrugh interfaces. These interfaces are represented as Buses in Simulink and structs in C. The input structs contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start stop signals etc.) and give the calculated duty cycles and the switching frequency. 
-On every PWM timer cycle timer interrupt is given. The timer pheripherial gives a signal to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
+The embedded framework provides connection between the generated code and the hardware peripherals. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case, all the generated code compiled from Matlab is hardware independent and reusable. The model connects to the embedded code through interfaces. These interfaces are represented as Buses in Simulink and as structures in C. The input structures contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start and stop signals etc.) and give the calculated duty cycles and the switching frequency. 
+On every PWM timer cycle, a timer interrupt is given. The timer pheripheral gives a signal to the AD converters to have a new set of measurements available (Three phase currents and the DC voltage). The values which change slower than the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number formats. In this case, the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
 \begin{absolutelynopagebreak}
 \begin{lstlisting}
@@ -142,8 +142,8 @@ typedef struct {
 All the measured inputs are 32 bit floating point numbers, the values start with V are voltages the values start with I are currents and the values start with T are temperatures.
 
 \subsection{Scheduling the tasks}
-For scheduling an embedded operation system is used. In this particular project the Keil RTX operation system is used. This Keil RTX has all the necessary tools for this project task priority levels timer functions and os signals. As it was mentioned above the PWM timer schedules the measurement of the DC voltage and the phase currents. After the measurements completed and the values calculated to their normalized values the motor control fast task is called. This task calculates the pwm duty cycle from the input and the given setpoint and checks whether the measured values exceed the predefined limits. 
-There is a lower priority task which scheduled by the os timer. This task provides operation framework and the compute intensive functions are also placed there. The structure of the Simulink model is described on the following chapter.
+For scheduling an embedded operation system is used. In this particular project the Keil RTX operation system (RTOS) is used. This Keil RTX has all the necessary tools for this project task priority levels timer functions and RTOS signals. As it was mentioned above, the PWM timer schedules the measurement of the DC voltage and the phase currents. After the measurements completed and the values calculated to their SI and normalized values the motor control fast task is called. This task calculates the PWM duty cycle from the input and the given set-point, and checks whether the measured values exceed the predefined limits. 
+There is a lower priority task which scheduled by the RTOS timer. This task provides operation framework and the compute intensive functions are also placed there. The structure of the Simulink model is described on the following chapter.
 
 
 
@@ -152,42 +152,46 @@ There is a lower priority task which scheduled by the os timer. This task provid
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/inputs}
-% where an .eps filename suffix will be assumed under latex, 
-% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-% via \DeclareGraphicsExtensions.
+
 \caption{Simulink bus creator for MeasurementIn bus}
 \label{fig:fig_MeasurementIn}
 \end{figure}
 
-To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. To be able to connect the the embedded code easily to the model common interfaces used. These common interfaces are represented as buses in Simulink. All modules have the following input-buses parameters and input and an output bus, where the calculated control signals are given. The difference between the input and the parameter bus is that the inputs are measured values and excitations, and the parameters are the constants which are specific to the system. The Simulink representation of the MeasurementIn bus which was described in the last chapter is on the << hivatkozás a fig_MeasurementIn re>>. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. The functions connected to eachothermodel by Simulink Referenced Models <<kép a referenceModel.pdf és hivatkozás>>. The organizing principle of the grouping of these referenced models is the model frequency. As it was  mentioned in the <<referenci a Embedded framework fejezetre>> there are two priority levels, the task which runs at switching frequncy, and one which scheduled by Keil RTX embedded operation sytem. The  On the following chapter a case study is described about one of the referenced models, the IGBT thermal model. This IGBT thermal model is scheduled by the embedded operating system. 
+To be able to make investigations with offline simulations the whole system is completed with the excitations, the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink environment and the results can be compared to real life measurements. To be able to connect the embedded code to the model easily, common interfaces are used. These common interfaces are represented as buses in Simulink. All modules have an input-bus containing parameters and input variables, as well as an output bus, where the calculated control signals are given. The difference between the input variables and parameters is that the inputs are measured values and excitations, while the parameters are the constants which are specific to the system. The Simulink representation of the MeasurementIn bus which was described in the last chapter is on the \ref{fig:fig_MeasurementIn} figure.
 
+Testing is also important part of this model based developement. That's why unit test environment built for every functional part of the inverter software. To be able to test every part separated, test environments has been made for them. The functions connected to each other are modeled with Simulink Referenced Models, which is shown on Figure \ref{fig:ref_model}. The organizing principle of the grouping of these referenced models is the model frequency. As it was mentioned in the Embedded framework chapter there are two priority levels, the task which runs at switching period (e.g. at $500\ \mu{}s$, and one which scheduled by Keil RTX embedded operation system. The following chapter is a case study, where the referenced model is an IGBT thermal model. This IGBT thermal model is scheduled by the embedded operating system. 
+
+\begin{figure*}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/referenceModels.pdf}
+
+\caption{Simulink Referenced models}
+\label{fig:ref_model}
+\end{figure*}
 
 \section{Case Study: IGBT Thermal model}
 
 \subsection{The function of the Thermal model}
-The semiconductor switches maximum allowable temperature is limited. The absolute maximum junction temperature of silicium based devices  are $175\ \degree{}C$ degrees. It is advisable to take the advantage of this temperature to keep the volume/power ratio as low as possible. The thermometer placed in the heat sink or in the semiconductor case does not provide suefficient information about the actual junction temperature of the semiconductor elements. However semiconductor junction temperatures can be calculated knowing the thermal model between the thermometer and the semiconductor junction. The model parameters and the model type are described in the datasheets. The junction temperatures can be calculated from the diode and transistor losses.
+The semiconductor switches maximum allowable temperature is limited. The absolute maximum junction temperature of silicon based devices  are $175\ \degree{}C$. It is advisable to take the advantage of this temperature to keep the volume/power ratio as low as possible. The thermometer placed in the heat sink or in the semiconductor's case does not provide sufficient information about the actual junction temperature of the semiconductor elements. However, the semiconductor's junction temperature can be estimated knowing the power loss of the semiconductor and the thermal model between the thermometer and the semiconductor junction. The model parameters and the model type are described in the datasheets. The junction temperatures can be calculated from the diode and transistor losses.
 
 \subsection{The offline model}
-The IGBT junction temperature calculation module structure is based on the principles laid down the full model description. The thermal model calculates the three phase bridge and the brake IGBT temperatures. The calculation method can be generalized, it is the same in every phase legs. The brake transistor is basically a truncated phase containing only the bottom transistors and freewheeling diode. With the following assumptions the temperute calculation can be simplified to only one transistor loss calculation:
+The structure of the IGBT junction temperature calculation module is based on the principles laid down in the full model description. The thermal model calculates the three phase bridge and the brake IGBT temperatures. The calculation method can be generalized, it is the same in every phase legs. The brake transistor is basically a truncated phase leg containing only the bottom transistor and the upper freewheeling diode. With the following assumptions the temperature calculation can be simplified to only one transistor's loss calculation:
 
 \begin{itemize}
-    \item The inductance of the brake resistor is neglectable, therfore the current carried by the diode can be also neglected
-    \item The switching loss of the diode can be also neglected, becouse the high power is carried by the IGBTs
+    \item The inductance of the brake resistor is negligible, therfore the current carried by the diode can be also neglected
+    \item The switching loss of the diode can be also neglected, because the high power is carried by the IGBTs
     \item With the two assumptions above, we can also use the PWM controls signals directly in the loss calculation.
 \end{itemize}
 
 Due to the above considerations phase IGBT temperature and brake IGBT temperature library blocks created as building block elements. The library block interface is containing the input signals, the output signals and the parameter bus as discussed in the model description part.
-The input bus is containing the current, the DC voltage and the duty cycle of the respective phase, switching frequency, case temperature. The parameter bus is containing the IGBT and the diode electrical and thermal parameters. The output bus is containing the IGBT and diode losses and temperatures. The parameters are calculated with a MATLAB script which contains the values from the datasheet and values derived from these parameters.
+The input variable bus contains the current, the DC voltage, and the duty cycle of the respective phase, the switching frequency and the case temperature. The parameter bus contains the IGBT and the diode electrical and thermal parameters. The output bus is containing the IGBT and diode losses and temperatures. The parameters are calculated with a MATLAB script which contains the values from the datasheet and values derived from these parameters.
 
-The library blocks can be separeted to three main parts:
+The library blocks can be separated to three main parts:
 \begin{itemize}
     \item Duty cycle calculation of the individual semiconductor (diode, IGBT) elements
     \item Switching and conduction loss calculations for each element.
     \item Temperature calculation from power losses using a three tie constant thermal model (Foster network or PI). 
 \end{itemize}
-Duty cycle calculation of the individual semiconductor (diode, IGBT) elements
-Switching and conduction loss calculations for each element.
-Temperature calculation from power losses using a three tie constant thermal model (Foster network or PI).
 
 \begin{figure}[!h]
 \centering
@@ -199,19 +203,19 @@ Temperature calculation from power losses using a three tie constant thermal mod
 \label{fig:foster}
 \end{figure}
 
-The three phase half-bridge IGBTs and brake IGBT temperature calculation is integrated in the model. This model can be easily simulated in the test environment and in the integrated model as a referenced model.
+The temperature calculation of the three phase half-bridge IGBT's and brake IGBT's is integrated in the model. This model can be easily simulated in the test environment and in the integrated model as a referenced model.
 
-\subsection{Offline test evironment}
+\subsection{Offline test environment}
 
-The test harness structure is the following: on the left side are the parameters and excitations. These blocks connected with the thermal model placed in the middle with the buses used in the integrated model. Output is on the right side. A model block created to calcalutethe one period average values of the output. The average values used for comparison with Semisel calculator.
+The test harness structure is the following: on the left side are the parameters and excitations. These blocks connected with the thermal model placed in the middle with the buses used in the integrated model. Output is on the right side. A model block is created to calculate one period average values of the output. The average values used for comparison with SemiSel calculator. SemiSel is a simulation tool from SEMIKRON for calculating power loss and temperature of power electronic components.
 
-We can define the desired setpoint in the simulation environment. The simulink model source parameters are calculated with script. (Input parameters: DC bus voltage, phase current, $cos\phi{}$, switching frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
+We can define the desired set-point in the simulation environment. The Simulink model's source parameters are calculated with script. (Input parameters: DC bus voltage, phase current, $cos\phi{}$, switching frequency, heat sink temperature). The Simulink model generates the excitation signals during the simulation.
 
-The Semisel calculator program is used for validating the calculated junction temperature. The Semisel software calculates the average temperature and the maximum temperature values of the selected device. Setting the same setpoint in the calculator program and in the simulation we expect the same result. The  semisel calculator doesn’t give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values is fullfilling our reuirements. The temperature should differ the direction of safety, so the calculated temepratures should be smaller, than the actual junction temperature. The temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is less than $5\ \degree{}C$ .
+The SemiSel calculator program is used for validating the calculated junction temperature. The SemiSel software calculates the average temperature and the maximum temperature values of the selected device. Setting the same set-point in the calculator program and in the simulation we expect the same result. The  SemiSel calculator does not give information about the temperature vs time function, only shows the maximum temperatures. Because the junction temperatures are used for absolute temperature protections, comparing the simulated and calculated maximum temperature values fulfills our reuqirements. The temperature should differ the onl in direction of safety, so the estimated temperatures should be higher, than the actual junction temperature. The temperature values are considered to be acceptable if the difference of the simulated and calculated temperatures is less than $5\ \degree{}C$ .
 
-After the successful offline simulation, if we see the desired results, the C code is generated from the integrated model which was tested in the real inverter.
+After the successful offline simulation, when we had seen the desired results, the C code was generated from the integrated model and was tested in the real inverter.
 
-The case, junction temperatures, phase currents was recorded in different setpoints on a drive testbench. The temperature vs. time function was simulated in Sumilink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the figure \ref{fig:fig_sim}.
+The case, junction temperatures and phase currents were recorded whit different set-points on a drive test-bench. The temperature vs. time function was simulated in Simulink, then the simulated and measured junction temperatures were  plotted in a coordinate system, which was synchronized with the corresponding phase currents. The results can be seen in the Figure \ref{fig:fig_sim}.
 
 \begin{figure*}[!h]
 \centering
