@@ -107,7 +107,7 @@ In the II. chapter we are going to discuss the embedded framework, wich provides
 \section{Embedded Framework}
 
 The embedded framework provides connection between the generated code and the hardware peripherials. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case all the generated code is hardware independent and reusable. The model connects to the embedded code thrugh interfaces. These interfaces are represented as Buses in Simulink and structs in C. The input structs contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start stop signals etc.) and give the calculated duty cycles and the switching frequency. 
-On every PWM timer cycle timer interrupt is given. The timer pheripherial gives an interrupt to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
+On every PWM timer cycle timer interrupt is given. The timer pheripherial gives a signal to AD converters a new set of measurements available (Three phase currents and the DC voltage). The values which change slower then the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number. In this case the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
 \begin{lstlisting}
 typedef struct \{ \\
@@ -140,8 +140,9 @@ There is a lower priority task which scheduled by the os timer. This task provid
 
 
 \section{Simulink Model}
-To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. These functions has the same input and output ports like the main model and the functionality models connect eachother through them. In Simulink the test excitations are given through these inputs and a behaviour is monitored through the outputs of these subsystem.  On the following chapters a case study is described about the IGBT thermal model.
-To be able to 
+To be able to make offline measurements ans simulations the whole system is modeled with the excitations the inverter and the plant. Therefore the offline simulations can be done in Matlab Simulink enviroment and results can be compared to real life measurements. Testing is also important part of this model based developement. Thatswhy unit test enviroment built for every functional part of the of the inverter. To be able to test every part separeted, test enviroments has been made for them. These functions has the same input and output ports like the main model and the functionality models connect eachother through them. 
+To be able to connect the the embedded code easily to the model common interfaces used. These common interfaces are represented as buses in Simulink. All modules have the following input-buses parameters, input
+In Simulink the test excitations are given through these inputs and a behaviour is monitored through the outputs of these subsystem.  On the following chapters a case study is described about the IGBT thermal model.
 
 Közös interfészek
 globális változók
