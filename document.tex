@@ -66,7 +66,7 @@ Email: dkiss@h-tec.hu; ahalmos@h-tec.hu; gkalman@h-tec.hu}
 
 \begin{abstract}
 %\boldmath
-Nowadays power converters are gaining more and more importance due to the increasing demand of energy efficient solutions in industrial applications, renewable energy sources and electrical transportation. To meet this new demand, development cycles must be shortened, without compromising the quality of the control software. This goal can be achieved with model driven development, and it also can make the process more agile. In the presented method, we are using MATLAB Simulink to implement the control related software components. These software modules, such as control loops and state machines can be functionally tested in the Simulink environment, with much better observability than the real embedded software. The embedded code is generated from these models. The embedded code additionally contains the framework, which is providing a interface between the model and the control peripherals and the real time operating system. In this paper we are discussing the process in detail on a frequency converter firmware as example.
+Nowadays power converters are gaining more and more importance due to the increasing demand of energy efficient solutions in industrial applications, renewable energy sources and electrical transportation. To meet this new demand, development cycles must be shortened, without compromising the quality of the control software. This goal can be achieved with model driven development, and it also can make the process more agile. In the presented method, we are using MATLAB Simulink to implement the control related software components. These software modules, such as control loops and state machines can be functionally tested in the Simulink environment, with much better observability than the real embedded software. The embedded code is generated from these models. The embedded code additionally contains the framework, which is providing an interface between the model and the control peripherals and the real time operating system. In this paper we are discussing the process in detail on a frequency converter firmware as example.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -112,6 +112,15 @@ In Chapter II. we are going to discuss the embedded framework, wich provides the
 
 \section{Embedded Framework}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\columnwidth]{figures/SoftwareLayers.PNG}
+
+\caption{Embedded software structure. Grey background: native embeedde code, blue background: code generated from MATLAB Simulink, constant line: dataflow, dashed line: triggering}
+\label{software_structure}
+\end{figure}
+
+
 The embedded framework provides connection between the generated code and the hardware peripherals. All the hardware dependent code is written in native C language. The scheduling of the generated code is made by an embedded operation system and hardware interrupts (timers, analog-digital converters, etc.). In this case, all the generated code compiled from Matlab is hardware independent and reusable. The model connects to the embedded code through interfaces. These interfaces are represented as Buses in Simulink and as structures in C. The input structures contain the parameters and the and the measured inputs, the output interfaces give signals for the embedded operation framework (start and stop signals etc.) and give the calculated duty cycles and the switching frequency. 
 On every PWM timer cycle, a timer interrupt is given. The timer pheripheral gives a signal to the AD converters to have a new set of measurements available (Three phase currents and the DC voltage). The values which change slower than the switching period are measured in the main task. The measured AD values calculated to values in SI units. The outputs of the model are also in normalized number formats. In this case, the connection between the embedded code and the model is also platform independent. Example the structure of the measured input values:
 
@@ -143,7 +152,7 @@ All the measured inputs are 32 bit floating point numbers, the values start with
 
 \subsection{Scheduling the tasks}
 For scheduling an embedded operation system is used. In this particular project the Keil RTX operation system (RTOS) is used. This Keil RTX has all the necessary tools for this project task priority levels timer functions and RTOS signals. As it was mentioned above, the PWM timer schedules the measurement of the DC voltage and the phase currents. After the measurements completed and the values calculated to their SI and normalized values the motor control fast task is called. This task calculates the PWM duty cycle from the input and the given set-point, and checks whether the measured values exceed the predefined limits. 
-There is a lower priority task which scheduled by the RTOS timer. This task provides operation framework and the compute intensive functions are also placed there. The structure of the Simulink model is described on the following chapter.
+There is a lower priority task which scheduled by the RTOS timer. This task provides operation framework and the compute intensive functions are also placed there. This software architecture is visualized on \ref{fig:software_structure} The structure of the Simulink model is described on the following chapter.
 
 
 
@@ -237,8 +246,7 @@ The case, junction temperatures and phase currents were recorded whit different 
 % is designed to preserve the operation of \label within \caption
 % even when the captionsoff option is in effect. However, because
 % of issues like this, it may be the safest practice to put all your
-% \label just after \caption rather than within \caption{}.
-%
+% \label just after \caption rather than within \caption{}.homahazkezeles@gmail.comhomahazkezeles@gmail.com
 % Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
